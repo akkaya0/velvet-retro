@@ -11,7 +11,10 @@ const SellerSignIn = () => {
         event.preventDefault();
 
         try {
-            await axios.post('http://localhost:5000/sellersignin', { email, password });
+            const response = await axios.post('http://localhost:5000/sellersignin', { email, password });
+            const { token } = response.data;
+
+            localStorage.setItem('token', token); // Store token in local storage
 
             setSuccess('Sign in successful!');
             setEmail('');
