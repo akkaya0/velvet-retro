@@ -5,6 +5,7 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import SellerSignIn from './pages/SellerSignIn';
 import SellerSignUp from './pages/SellerSignUp';
+import PostProduct from './pages/PostProduct';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/sellersignin" element={<SellerSignIn />} />
         <Route path="/sellersignUp" element={<SellerSignUp />} />
+        <Route path="/postproduct" element={<PostProduct />} />
       </Routes>
     </Router>
   );

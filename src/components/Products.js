@@ -9,7 +9,13 @@ const Products = () => {
         fetch('http://localhost:5000/products')
             .then(response => response.json())
             .then(data => {
-                setProducts(data);
+                console.log(data);  // Check the structure of the data
+                const formattedProducts = data.map(product => ({
+                    ...product,
+                    sizes: parseSizes(product.sizes),
+                    firebase_images: product.firebase_images || []
+                }));
+                setProducts(formattedProducts);
                 setLoading(false);
             })
             .catch(err => {
@@ -17,6 +23,18 @@ const Products = () => {
                 setLoading(false);
             });
     }, []);
+
+    // Utility function to parse the sizes string
+    const parseSizes = (sizesString) => {
+        try {
+            // Clean up the string to make it valid JSON
+            const cleanedString = sizesString.replace(/'/g, '"').replace(/[\{\}]/g, '').split(',').map(s => s.trim());
+            return cleanedString;
+        } catch (e) {
+            console.error('Error parsing sizes:', e);
+            return [];
+        }
+    };
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading products: {error.message}</p>;
@@ -29,7 +47,8 @@ const Products = () => {
                         <h2>{product.title}</h2>
                         <p>{product.description}</p>
                         <p>Price: €{parseFloat(product.price).toFixed(2)}</p>
-                        <p>Sizes: {product.sizes}</p>
+                        <p>Sizes: {Array.isArray(product.sizes) ? product.sizes.join(', ') : 'No sizes available'}</p>
+                        <p>Seller: {product.shop_name}</p>
                         <div>
                             {product.firebase_images && product.firebase_images.length > 0 ? (
                                 product.firebase_images.map((image, index) => (

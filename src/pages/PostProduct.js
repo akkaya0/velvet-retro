@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Navbar from '../components/Navbar';
 
 const PostProduct = () => {
     const [title, setTitle] = useState('');
@@ -7,20 +8,40 @@ const PostProduct = () => {
     const [sizes, setSizes] = useState('');
     const [images, setImages] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log({
+
+        const product = {
             title,
             description,
             price,
-            sizes: sizes.split(','),
-            images: images.split(',')
-        });
+            sizes: sizes.split(',').map(size => size.trim()),
+            firebase_images: images.split(',').map(image => image.trim()),
+        };
+
+        try {
+            const response = await fetch('http://localhost:5000/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(product)
+            });
+
+            if (response.ok) {
+                alert('Product posted successfully!');
+            } else {
+                alert('Failed to post product');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     return (
         <div>
-            <h1>Post a New Product</h1>
+            <Navbar />
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="title">Title:</label>
